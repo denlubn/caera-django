@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="partition">
+    <div class="image_detail">
+      <img class="image" src="{{ proposal.image_url }}" alt="Proposal image">
+    </div>
+    <div class="info">
+      <h1>
+        {{ proposal.title }}
+        <a href="{% url 'caera:proposal-delete' pk=proposal.id %}" class="btn btn-danger link-to-page">
+          Видалити
+        </a>
+
+        <a href="{% url 'caera:proposal-update' pk=proposal.id %}" class="btn btn-secondary link-to-page">
+          Редагувати
+        </a>
+      </h1>
+
+    </div>
+  </div>
+
+  <div class="proposal-description">
+    {{ proposal.description }}
+  </div>
+
+  {#  <div class="reviews">#}
+  {#    <h2 class="review_h2">#}
+  {#      Reviews#}
+  {#      {% if user.is_staff %}#}
+  {#        <a href="{% url 'city_guide:question-create' pk=place.id %}" class="btn link-to-page" style="color: dodgerblue">#}
+  {#          Question#}
+  {#        </a>#}
+  {#      {% endif %}#}
+  {##}
+  {#      <a href="{% url 'city_guide:comment-create' pk=place.id %}" class="btn link-to-page" style="color: forestgreen">#}
+  {#        Comment#}
+  {#      </a>#}
+  {#    </h2>#}
+  {##}
+  {#    <hr>#}
+  {##}
+  {#    {% for question in place.questions.all %}#}
+  {#      <div class="question">#}
+  {#        {{ question.user.username }}#}
+  {#        <p style="color: dodgerblue">#}
+  {#          question#}
+  {#        </p>#}
+  {##}
+  {#        <p>#}
+  {#          {{ question.created_at }}#}
+  {#        </p>#}
+  {##}
+  {#        <p>#}
+  {#          {{ question.text }}#}
+  {#          <a href="{% url 'city_guide:question-comment-create' pk=place.id question_pk=question.id %}" class="btn link-to-page" style="color: rebeccapurple">#}
+  {#            Answer#}
+  {#          </a>#}
+  {#        </p>#}
+  {#      </div>#}
+  {##}
+  {#      {% for answer in question.comments.all %}#}
+  {#          <div class="answer">#}
+  {#          {{ answer.user.username }}#}
+  {#          <p style="color: rebeccapurple">#}
+  {#            answer#}
+  {#          </p>#}
+  {##}
+  {#          <p>#}
+  {#            {{ answer.created_at }}#}
+  {#          </p>#}
+  {##}
+  {#          <p>#}
+  {#            {{ answer.text }}#}
+  {#          </p>#}
+  {#        </div>#}
+  {#      {% endfor %}#}
+  {#    {% endfor %}#}
+  {##}
+  {#    {% for comment in place.comments.all %}#}
+  {#      {% if not comment.question %}#}
+  {#        <div class="comments">#}
+  {#          <div>#}
+  {#            {{ comment.user.username }}#}
+  {#            <p style="color: forestgreen">#}
+  {#              comment#}
+  {#            </p>#}
+  {##}
+  {#            <p>#}
+  {#              {{ comment.created_at }}#}
+  {#            </p>#}
+  {##}
+  {#            <p>#}
+  {#              {{ comment.text }}#}
+  {#            </p>#}
+  {#          </div>#}
+  {##}
+  {#          {% if comment.media_url %}#}
+  {#            <div class="image_comment">#}
+  {#              <img class="image" src="{{ comment.media_url }}" alt="Comment media">#}
+  {#            </div>#}
+  {#          {% endif %}#}
+  {#        </div>#}
+  {#      {% endif %}#}
+  {#    {% endfor %}#}
+  {#  </div>#}
+{% endblock %}

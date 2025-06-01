@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+{#  <h1>#}
+{#    Proposal List#}
+    {#      <a href="{% url 'city_guide:place-create' %}" class="btn btn-primary link-to-page">#}
+    {#        Create#}
+    {#      </a>#}
+{#  </h1>#}
+
+  <br>
+
+  {% if proposal_list %}
+    {% for proposal in proposal_list %}
+      <div class="partition">
+        <div class="image_div">
+          <img class="image" src="{{ proposal.image_url }}" alt="Proposal image">
+        </div>
+        <div class="info">
+          <a href="{% url "caera:proposal-detail" pk=proposal.id %}">{{ proposal.title }}</a>
+          {#            <a href="{% url "city_guide:place-detail" pk=place.id %}">{{ proposal.title }}</a>#}
+          <p>
+            Tags:
+            {% for tag in proposal.tags.all %}
+              {{ tag.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </p>
+          <p>
+            Author: {{ proposal.author }}
+          </p>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Отакої ;( Не створено ні одної пропозиції</p>
+  {% endif %}
+
+{% endblock %}

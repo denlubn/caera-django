@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>{{ object|yesno:"Оновити,Створити" }} пропозицію</h1>
+  <form action="" method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        {{ field|as_crispy_field }}
+{#        {{ field.label_tag }}#}
+{#        {{ field }}#}
+{#        {% if field.help_text %}#}
+{#          <small class="form-text text-muted">{{ field.help_text }}</small>#}
+{#        {% endif %}#}
+{#        {% for error in field.errors %}#}
+{#          <div class="text-danger">{{ error }}</div>#}
+{#        {% endfor %}#}
+
+        {# Додаємо кнопку тільки під полем tags #}
+        {% if field.name == "tags" %}
+          <a href="{% url 'caera:tag-create' %}" class="btn btn-sm btn-outline-secondary mt-2">
+            ➕ Створити новий тег
+          </a>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <input type="submit" value="{{ object|yesno:"Оновити,Створити" }}" class="btn btn-primary">
+  </form>
+{% endblock %}
