@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from caera.models import Proposal, Tag, User, City, Project
+from caera.models import Proposal, Tag, User, City, Project, Comment
 
 
 class TagForm(forms.ModelForm):
@@ -10,6 +10,15 @@ class TagForm(forms.ModelForm):
         fields = ['name']
         labels = {
             'name': 'Назва',
+        }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+        labels = {
+            'text': 'Текст',
         }
 
 

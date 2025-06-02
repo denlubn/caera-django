@@ -49,84 +49,83 @@
     </div>
   </div>
 
-  {#  <div class="reviews">#}
-  {#    <h2 class="review_h2">#}
-  {#      Reviews#}
-  {#      {% if user.is_staff %}#}
-  {#        <a href="{% url 'city_guide:question-create' pk=place.id %}" class="btn link-to-page" style="color: dodgerblue">#}
-  {#          Question#}
-  {#        </a>#}
-  {#      {% endif %}#}
-  {##}
-  {#      <a href="{% url 'city_guide:comment-create' pk=place.id %}" class="btn link-to-page" style="color: forestgreen">#}
-  {#        Comment#}
-  {#      </a>#}
-  {#    </h2>#}
-  {##}
-  {#    <hr>#}
-  {##}
-  {#    {% for question in place.questions.all %}#}
-  {#      <div class="question">#}
-  {#        {{ question.user.username }}#}
-  {#        <p style="color: dodgerblue">#}
-  {#          question#}
-  {#        </p>#}
-  {##}
-  {#        <p>#}
-  {#          {{ question.created_at }}#}
-  {#        </p>#}
-  {##}
-  {#        <p>#}
-  {#          {{ question.text }}#}
-  {#          <a href="{% url 'city_guide:question-comment-create' pk=place.id question_pk=question.id %}" class="btn link-to-page" style="color: rebeccapurple">#}
-  {#            Answer#}
-  {#          </a>#}
-  {#        </p>#}
-  {#      </div>#}
-  {##}
-  {#      {% for answer in question.comments.all %}#}
-  {#          <div class="answer">#}
-  {#          {{ answer.user.username }}#}
-  {#          <p style="color: rebeccapurple">#}
-  {#            answer#}
-  {#          </p>#}
-  {##}
-  {#          <p>#}
-  {#            {{ answer.created_at }}#}
-  {#          </p>#}
-  {##}
-  {#          <p>#}
-  {#            {{ answer.text }}#}
-  {#          </p>#}
-  {#        </div>#}
-  {#      {% endfor %}#}
-  {#    {% endfor %}#}
-  {##}
-  {#    {% for comment in place.comments.all %}#}
-  {#      {% if not comment.question %}#}
-  {#        <div class="comments">#}
-  {#          <div>#}
-  {#            {{ comment.user.username }}#}
-  {#            <p style="color: forestgreen">#}
-  {#              comment#}
-  {#            </p>#}
-  {##}
-  {#            <p>#}
-  {#              {{ comment.created_at }}#}
-  {#            </p>#}
-  {##}
-  {#            <p>#}
-  {#              {{ comment.text }}#}
-  {#            </p>#}
-  {#          </div>#}
-  {##}
-  {#          {% if comment.media_url %}#}
-  {#            <div class="image_comment">#}
-  {#              <img class="image" src="{{ comment.media_url }}" alt="Comment media">#}
-  {#            </div>#}
-  {#          {% endif %}#}
-  {#        </div>#}
-  {#      {% endif %}#}
-  {#    {% endfor %}#}
-  {#  </div>#}
+  <div class="reviews">
+    <h2 class="review_h2">
+      Комментарі
+
+      <a href="{% url 'caera:proposal-comment-create' pk=proposal.id %}" class="btn link-to-page"
+         style="color: forestgreen">
+        Комментувати
+      </a>
+    </h2>
+
+    <hr>
+
+    {% for comment in proposal.comments.all %}
+      <div class="question">
+        {{ comment.user.username }}
+
+        <p>
+          {{ comment.created_at }}
+        </p>
+
+        <p>
+          {{ comment.text }}
+        </p>
+
+        {% if comment.user == request.user %}
+          <div class="d-flex gap-2">
+            <a href="{% url 'caera:proposal-comment-update' pk=proposal.pk comment_pk=comment.pk %}"
+               class="btn btn-sm btn-outline-primary">Редагувати</a>
+            <a href="{% url 'caera:proposal-comment-delete' pk=proposal.pk comment_pk=comment.pk %}"
+               class="btn btn-sm btn-outline-danger">Видалити</a>
+          </div>
+        {% endif %}
+      </div>
+
+      {#        {% for answer in question.comments.all %}#}
+      {#            <div class="answer">#}
+      {#            {{ answer.user.username }}#}
+      {#            <p style="color: rebeccapurple">#}
+      {#              answer#}
+      {#            </p>#}
+      {##}
+      {#            <p>#}
+      {#              {{ answer.created_at }}#}
+      {#            </p>#}
+      {##}
+      {#            <p>#}
+      {#              {{ answer.text }}#}
+      {#            </p>#}
+      {#          </div>#}
+      {#        {% endfor %}#}
+    {% endfor %}
+
+    {#      {% for comment in place.comments.all %}#}
+    {#        {% if not comment.question %}#}
+    {#          <div class="comments">#}
+    {#            <div>#}
+    {#              {{ comment.user.username }}#}
+    {#              <p style="color: forestgreen">#}
+    {#                comment#}
+    {#              </p>#}
+    {##}
+    {#              <p>#}
+    {#                {{ comment.created_at }}#}
+    {#              </p>#}
+    {##}
+    {#              <p>#}
+    {#                {{ comment.text }}#}
+    {#              </p>#}
+    {#            </div>#}
+    {##}
+    {#            {% if comment.media_url %}#}
+    {#              <div class="image_comment">#}
+    {#                <img class="image" src="{{ comment.media_url }}" alt="Comment media">#}
+    {#              </div>#}
+    {#            {% endif %}#}
+    {#          </div>#}
+    {#        {% endif %}#}
+    {#      {% endfor %}#}
+  </div>
 {% endblock %}

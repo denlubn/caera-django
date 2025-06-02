@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import UpdateView
 
-from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm, ProjectForm
-from caera.models import Proposal, User, Tag, Project
+from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm, ProjectForm, CommentForm
+from caera.models import Proposal, User, Tag, Project, Comment
 
 
 @login_required
@@ -128,3 +128,65 @@ class TagCreateView(LoginRequiredMixin, generic.CreateView):
     model = Tag
     form_class = TagForm
     success_url = reverse_lazy("caera:proposal-create")
+
+
+class ProposalCommentCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Comment
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        proposal = get_object_or_404(Proposal, pk=self.kwargs["pk"])
+        form.instance.user = self.request.user
+        form.instance.content_object = proposal
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()
+
+
+class ProposalCommentUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Comment
+    form_class = CommentForm
+    pk_url_kwarg = "comment_pk"
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()
+
+
+class ProposalCommentDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Comment
+    pk_url_kwarg = "comment_pk"
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()
+
+
+class ProjectCommentCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Comment
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        project = get_object_or_404(Project, pk=self.kwargs["project_pk"])
+        form.instance.user = self.request.user
+        form.instance.content_object = project
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()
+
+
+class ProjectCommentUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Comment
+    form_class = CommentForm
+    pk_url_kwarg = "comment_pk"
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()
+
+
+class ProjectCommentDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Comment
+    pk_url_kwarg = "comment_pk"
+
+    def get_success_url(self):
+        return self.object.content_object.get_absolute_url()

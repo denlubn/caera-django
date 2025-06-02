@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from caera.models import User, Tag, Proposal
+from caera.models import User, Tag, Proposal, Comment
+
 
 @admin.register(Proposal)
 class ProposalAdmin(admin.ModelAdmin):
@@ -17,4 +18,5 @@ class ProposalAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Tag)
+admin.site.register(Comment)
 admin.site.register(User, UserAdmin)
