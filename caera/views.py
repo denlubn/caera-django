@@ -7,7 +7,7 @@ from django.views import generic, View
 from django.views.generic import UpdateView
 
 from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm, ProjectForm, CommentForm
-from caera.models import Proposal, User, Tag, Project, Comment, Like
+from caera.models import Proposal, User, Tag, Project, Comment, Like, PaidReaction
 
 
 @login_required
@@ -76,8 +76,10 @@ class ProposalDetailView(generic.DetailView):
 
         if self.request.user.is_authenticated:
             context["user_like"] = proposal.get_user_like(self.request.user)
+            context["user_paid_reaction"] = proposal.paid_reactions.filter(user=self.request.user).exists()
         else:
             context["user_like"] = None
+            context["user_paid_reaction"] = None
 
         return context
 
@@ -120,7 +122,16 @@ class ProjectDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        project = self.get_object()
         context['proposal'] = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+
+        if self.request.user.is_authenticated:
+            context["user_like"] = project.get_user_like(self.request.user)
+            context["user_paid_reaction"] = project.paid_reactions.filter(user=self.request.user).exists()
+        else:
+            context["user_like"] = None
+            context["user_paid_reaction"] = None
+
         return context
 
 
@@ -242,5 +253,39 @@ class ProjectLikeToggleView(LoginRequiredMixin, View):
         else:
             like.value = value
             like.save()
+
+        return redirect(project.get_absolute_url())
+
+
+class ProposalPaidReactionToggleView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        content_type = ContentType.objects.get_for_model(Proposal)
+
+        paid_reaction, created = PaidReaction.objects.get_or_create(
+            user=request.user,
+            content_type=content_type,
+            object_id=proposal.id,
+        )
+
+        if not created:
+            paid_reaction.delete()  # toggle off
+
+        return redirect(proposal.get_absolute_url())
+
+
+class ProjectPaidReactionToggleView(LoginRequiredMixin, View):
+    def post(self, request, pk, project_pk):
+        project = get_object_or_404(Project, pk=project_pk, proposal_id=pk)
+        content_type = ContentType.objects.get_for_model(Project)
+
+        paid_reaction, created = PaidReaction.objects.get_or_create(
+            user=request.user,
+            content_type=content_type,
+            object_id=project.id,
+        )
+
+        if not created:
+            paid_reaction.delete()  # toggle off
 
         return redirect(project.get_absolute_url())

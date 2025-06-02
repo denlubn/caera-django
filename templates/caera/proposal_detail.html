@@ -34,6 +34,14 @@
         </button>
       </form>
 
+      <form method="post" action="{% url 'caera:proposal-paid-reaction-toggle' pk=proposal.pk %}">
+        {% csrf_token %}
+        <button type="submit"
+                class="btn {% if user_paid_reaction %}btn-warning{% else %}btn-outline-warning{% endif %}">
+          ⭐ ({{ proposal.paid_reactions.count }})
+        </button>
+      </form>
+
     </div>
   </div>
 

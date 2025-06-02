@@ -4,7 +4,8 @@ from caera.views import ProposalListView, ProposalDetailView, profile_view, Prof
     TagCreateView, ProposalUpdateView, ProposalDeleteView, ProfileCreateView, \
     ProjectCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, \
     ProposalCommentCreateView, ProposalCommentUpdateView, ProposalCommentDeleteView, ProjectCommentCreateView, \
-    ProjectCommentUpdateView, ProjectCommentDeleteView, ProposalLikeToggleView, ProjectLikeToggleView
+    ProjectCommentUpdateView, ProjectCommentDeleteView, ProposalLikeToggleView, ProjectLikeToggleView, \
+    ProposalPaidReactionToggleView, ProjectPaidReactionToggleView
 
 urlpatterns = [
     path("tag/create/", TagCreateView.as_view(), name="tag-create"),
@@ -19,6 +20,7 @@ urlpatterns = [
     path("proposals/<int:pk>/comments/<int:comment_pk>/delete/", ProposalCommentDeleteView.as_view(), name="proposal-comment-delete"),
 
     path("proposals/<int:pk>/like-toggle/", ProposalLikeToggleView.as_view(), name="proposal-like-toggle"),
+    path("proposals/<int:pk>/paid-reaction/", ProposalPaidReactionToggleView.as_view(), name="proposal-paid-reaction-toggle"),
 
     path("proposals/<int:pk>/projects/", ProjectListView.as_view(), name="project-list"),
     path("proposals/<int:pk>/projects/create/", ProjectCreateView.as_view(), name="project-create"),
@@ -30,6 +32,7 @@ urlpatterns = [
     path("proposals/<int:pk>/projects/<int:project_pk>/comments/<int:comment_pk>/delete/", ProjectCommentDeleteView.as_view(), name="project-comment-delete"),
 
     path("proposals/<int:pk>/projects/<int:project_pk>/like-toggle/", ProjectLikeToggleView.as_view(), name="project-like-toggle"),
+    path("proposals/<int:pk>/projects/<int:project_pk>/paid-reaction/", ProjectPaidReactionToggleView.as_view(), name="project-paid-reaction-toggle"),
 
     path("accounts/profile/", profile_view, name="profile"),
     path("accounts/create/", ProfileCreateView.as_view(), name="profile-create"),
