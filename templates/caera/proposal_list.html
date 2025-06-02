@@ -9,11 +9,22 @@
   {#      </a>#}
   {#  </h1>#}
 
-  <form action="" method="get" class="form-inline">
-    {{ search_form|crispy }}
-    <input type="submit" value="🔍" class="btn btn-secondary">
-  </form>
-
+  <div class="d-flex gap-2 mb-3">
+    <form action="" method="get" class="form-inline d-flex gap-2 align-items-end">
+      <div>
+        {{ search_form.title|as_crispy_field }}
+      </div>
+      <div>
+        {{ search_form.tags|as_crispy_field }}
+      </div>
+      <div>
+        {{ search_form.city|as_crispy_field }}
+      </div>
+      <div>
+        <input type="submit" value="Фільтрувати" class="btn btn-secondary">
+      </div>
+    </form>
+  </div>
   <br>
 
   {% if proposal_list %}

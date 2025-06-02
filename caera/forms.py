@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from caera.models import Proposal, Tag, User
+from caera.models import Proposal, Tag, User, City
 
 
 class TagForm(forms.ModelForm):
@@ -33,8 +33,29 @@ class ProposalSearchForm(forms.Form):
         max_length=255,
         required=False,
         label="",
-        widget=forms.TextInput(attrs={"placeholder": "Пошук по назві"})
+        widget=forms.TextInput(attrs={"placeholder": "Пошук за назвою"})
     )
+
+    tags = forms.ModelChoiceField(
+        queryset=Tag.objects.none(),
+        required=False,
+        label="",
+        empty_label="Усі теги",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+
+    city = forms.ModelChoiceField(
+        queryset=City.objects.none(),
+        required=False,
+        label="",
+        empty_label="Усі міста",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["tags"].queryset = Tag.objects.all()
+        self.fields["city"].queryset = City.objects.all()
 
 
 # image = forms.ImageField(

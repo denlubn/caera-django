@@ -33,27 +33,38 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 class ProposalListView(generic.ListView):
     model = Proposal
-    queryset = Proposal.objects.select_related('author').prefetch_related('tags')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProposalListView, self).get_context_data(**kwargs)
 
         title = self.request.GET.get("title", "")
+        tag = self.request.GET.get("tags")
 
         context["search_form"] = ProposalSearchForm(initial={
             "title": title,
+            "tags": tag,
         })
 
         return context
 
     def get_queryset(self):
+        queryset = Proposal.objects.select_related('author', 'city').prefetch_related('tags')
         form = ProposalSearchForm(self.request.GET)
 
         if form.is_valid():
-            return self.queryset.filter(
-                title__icontains=form.cleaned_data["title"].strip()
-            )
-        return self.queryset
+            title = form.cleaned_data["title"]
+            tag = form.cleaned_data["tags"]
+            city = form.cleaned_data["city"]
+
+            if title:
+                queryset = queryset.filter(title__icontains=title.strip())
+            if tag:
+                queryset = queryset.filter(tags=tag)
+            if city:
+                queryset = queryset.filter(city=city)
+
+            return queryset
+        return queryset
 
 class ProposalDetailView(generic.DetailView):
     model = Proposal

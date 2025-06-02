@@ -25,4 +25,10 @@ urlpatterns = [
     path("", include("caera.urls", namespace="caera")),
     path("accounts/", include('django.contrib.auth.urls')),
     path("__debug__/", include(debug_toolbar.urls)),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(
+    settings.STATIC_URL,
+    document_root=settings.STATIC_ROOT
+) + static(
+    settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT
+)
