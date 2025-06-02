@@ -1,7 +1,8 @@
 from django.urls import path
 
 from caera.views import ProposalListView, ProposalDetailView, profile_view, ProfileUpdateView, ProposalCreateView, \
-    TagCreateView, ProposalUpdateView, ProposalDeleteView, ProfileCreateView, ProposalsProjectsListView
+    TagCreateView, ProposalUpdateView, ProposalDeleteView, ProfileCreateView, \
+    ProjectCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView
 
 urlpatterns = [
     path("tag/create/", TagCreateView.as_view(), name="tag-create"),
@@ -12,7 +13,11 @@ urlpatterns = [
     path("proposals/<int:pk>/update/", ProposalUpdateView.as_view(), name="proposal-update"),
     path("proposals/<int:pk>/delete/", ProposalDeleteView.as_view(), name="proposal-delete"),
 
-    path("proposals/<int:pk>/projects", ProposalsProjectsListView.as_view(), name="projects-list"),
+    path("proposals/<int:pk>/projects/", ProjectListView.as_view(), name="project-list"),
+    path("proposals/<int:pk>/projects/create/", ProjectCreateView.as_view(), name="project-create"),
+    path("proposals/<int:pk>/projects/<int:project_pk>", ProjectDetailView.as_view(), name="project-detail"),
+    path("proposals/<int:pk>/projects/<int:project_pk>/update/", ProjectUpdateView.as_view(), name="project-update"),
+    path("proposals/<int:pk>/projects/<int:project_pk>/delete/", ProjectDeleteView.as_view(), name="project-delete"),
 
     path("accounts/profile/", profile_view, name="profile"),
     path("accounts/create/", ProfileCreateView.as_view(), name="profile-create"),

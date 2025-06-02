@@ -2,6 +2,11 @@ body {
     margin-top: 20px;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 div {
     display: block;
     /*vertical-align: baseline;*/
@@ -67,11 +72,12 @@ div {
 
 .image_detail {
     margin: 8px 8px;
-    border: 1px solid;
+    border: 1px solid #ccc;
     border-radius: 4px;
     height: 182px;
     width: 312px;
     overflow: hidden;
+    background-color: #fff;
 }
 
 .image_comment {
@@ -102,3 +108,9 @@ div {
     font-size: 16px;
     line-height: 1.5;
 }
+
+.project-card {
+    max-width: 312px;
+}
+
+

@@ -1,7 +1,14 @@
+import os
+import uuid
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.urls import reverse
+from slugify import slugify
+
+
+# from django.utils.text import slugify
 
 
 class City(models.Model):
@@ -23,9 +30,18 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
+def proposal_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+
+    filename = f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
+
+    return os.path.join("proposals", filename)
+
+
 class Proposal(models.Model):
     title = models.CharField(max_length=250)
-    image_url = models.URLField(null=True, blank=True)
+    image = models.ImageField(upload_to=proposal_image_file_path, null=True, blank=True)
     description = models.TextField()
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, related_name="proposals")
@@ -40,21 +56,29 @@ class Proposal(models.Model):
         return reverse("caera:proposal-detail", kwargs={'pk': self.pk})
 
 
+def project_image_file_path(instance, filename):
+    _, extension = os.path.splitext(filename)
+
+    filename = f"{slugify(instance.title)}-{uuid.uuid4()}{extension}"
+
+    return os.path.join("projects", filename)
+
+
 class Project(models.Model):
     title = models.CharField(max_length=250)
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE, related_name="projects")
-    image_url = models.URLField(null=True, blank=True)
+    image = models.ImageField(upload_to=proposal_image_file_path, null=True, blank=True)
     description = models.TextField()
     tags = models.ManyToManyField(Tag, related_name="projects")
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     # updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
 
-    # def get_absolute_url(self):
-    #     return reverse("caera:proposal-detail", kwargs={'pk': self.pk})
+    def get_absolute_url(self):
+        return reverse("caera:project-detail", kwargs={'project_pk': self.pk, 'pk': self.proposal.pk})
 
 
 class User(AbstractUser):

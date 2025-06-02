@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import UpdateView
 
-from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm
+from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm, ProjectForm
 from caera.models import Proposal, User, Tag, Project
 
 
@@ -85,7 +85,7 @@ class ProposalDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy("caera:proposal-list")
 
 
-class ProposalsProjectsListView(generic.ListView):
+class ProjectListView(generic.ListView):
     model = Project
 
     def get_queryset(self):
@@ -96,6 +96,32 @@ class ProposalsProjectsListView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['proposal'] = get_object_or_404(Proposal, pk=self.kwargs['pk'])
         return context
+
+
+class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Project
+    form_class = ProjectForm
+
+
+class ProjectDetailView(generic.DetailView):
+    model = Project
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['proposal'] = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+        return context
+
+
+class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Project
+    form_class = ProjectForm
+
+
+class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Project
+
+    def get_success_url(self):
+        return reverse_lazy("caera:proposal-detail", kwargs={"pk": self.object.proposal.pk})
 
 
 class TagCreateView(LoginRequiredMixin, generic.CreateView):

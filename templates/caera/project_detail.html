@@ -2,20 +2,20 @@
 
 {% block content %}
   <div class="partition">
-    {% if proposal.image %}
+    {% if project.image %}
       <div class="image_detail">
-        <img class="image" src="{{ proposal.image.url }}" alt="Proposal image">
+        <img class="image" src="{{ project.image.url }}" alt="Project image">
       </div>
     {% else %}
     {% endif %}
     <div class="info">
       <h1>
-        {{ proposal.title }}
-        <a href="{% url 'caera:proposal-delete' pk=proposal.id %}" class="btn btn-danger link-to-page">
+        {{ project.title }}
+        <a href="{% url 'caera:project-delete' pk=proposal.id project_pk=project.id %}" class="btn btn-danger link-to-page">
           Видалити
         </a>
 
-        <a href="{% url 'caera:proposal-update' pk=proposal.id %}" class="btn btn-secondary link-to-page">
+        <a href="{% url 'caera:project-update' pk=proposal.id project_pk=project.id %}" class="btn btn-secondary link-to-page">
           Редагувати
         </a>
       </h1>
@@ -24,29 +24,7 @@
   </div>
 
   <div class="proposal-description">
-    {{ proposal.description }}
-  </div>
-
-  <div class="proposal-description">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Проєкти:</h5>
-      <a href="{% url 'caera:project-list' pk=proposal.id %}" class="btn btn-outline-primary btn-sm">Подивитися всі</a>
-    </div>
-
-    <div class="d-flex flex-wrap gap-3">
-      {% for project in proposal.projects.all %}
-        <div class="project-card">
-          <a href="{{ project.get_absolute_url }}">
-            <div class="image_div">
-              <img src="{{ project.image.url }}" alt="{{ project.title }}" class="image">
-            </div>
-          </a>
-          <div class="text-muted mt-1 small">від: {{ project.author }}</div>
-        </div>
-        {% empty %}
-        <p>Немає доступних проєктів.</p>
-      {% endfor %}
-    </div>
+    {{ project.description }}
   </div>
 
   {#  <div class="reviews">#}
