@@ -20,6 +20,20 @@
         </a>
       </h1>
 
+      <form method="post" action="{% url 'caera:proposal-like-toggle' pk=proposal.pk %}">
+        {% csrf_token %}
+
+        <button type="submit" name="value" value="like"
+                class="btn {% if user_like and user_like.value == 'like' %}btn-success{% else %}btn-outline-success{% endif %}">
+          👍 ({{ proposal.like_count }})
+        </button>
+
+        <button type="submit" name="value" value="dislike"
+                class="btn {% if user_like and user_like.value == 'dislike' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+          👎 ({{ proposal.dislike_count }})
+        </button>
+      </form>
+
     </div>
   </div>
 

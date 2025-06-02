@@ -4,7 +4,7 @@ from caera.views import ProposalListView, ProposalDetailView, profile_view, Prof
     TagCreateView, ProposalUpdateView, ProposalDeleteView, ProfileCreateView, \
     ProjectCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, \
     ProposalCommentCreateView, ProposalCommentUpdateView, ProposalCommentDeleteView, ProjectCommentCreateView, \
-    ProjectCommentUpdateView, ProjectCommentDeleteView
+    ProjectCommentUpdateView, ProjectCommentDeleteView, ProposalLikeToggleView, ProjectLikeToggleView
 
 urlpatterns = [
     path("tag/create/", TagCreateView.as_view(), name="tag-create"),
@@ -18,6 +18,8 @@ urlpatterns = [
     path("proposals/<int:pk>/comments/<int:comment_pk>/update/", ProposalCommentUpdateView.as_view(), name="proposal-comment-update"),
     path("proposals/<int:pk>/comments/<int:comment_pk>/delete/", ProposalCommentDeleteView.as_view(), name="proposal-comment-delete"),
 
+    path("proposals/<int:pk>/like-toggle/", ProposalLikeToggleView.as_view(), name="proposal-like-toggle"),
+
     path("proposals/<int:pk>/projects/", ProjectListView.as_view(), name="project-list"),
     path("proposals/<int:pk>/projects/create/", ProjectCreateView.as_view(), name="project-create"),
     path("proposals/<int:pk>/projects/<int:project_pk>", ProjectDetailView.as_view(), name="project-detail"),
@@ -26,6 +28,8 @@ urlpatterns = [
     path("proposals/<int:pk>/projects/<int:project_pk>/comments/create/", ProjectCommentCreateView.as_view(), name="project-comment-create"),
     path("proposals/<int:pk>/projects/<int:project_pk>/comments/<int:comment_pk>/update/", ProjectCommentUpdateView.as_view(), name="project-comment-update"),
     path("proposals/<int:pk>/projects/<int:project_pk>/comments/<int:comment_pk>/delete/", ProjectCommentDeleteView.as_view(), name="project-comment-delete"),
+
+    path("proposals/<int:pk>/projects/<int:project_pk>/like-toggle/", ProjectLikeToggleView.as_view(), name="project-like-toggle"),
 
     path("accounts/profile/", profile_view, name="profile"),
     path("accounts/create/", ProfileCreateView.as_view(), name="profile-create"),

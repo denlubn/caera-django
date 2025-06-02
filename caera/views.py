@@ -1,12 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, get_object_or_404
+from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import generic, View
 from django.views.generic import UpdateView
 
 from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm, ProjectForm, CommentForm
-from caera.models import Proposal, User, Tag, Project, Comment
+from caera.models import Proposal, User, Tag, Project, Comment, Like
 
 
 @login_required
@@ -68,6 +69,17 @@ class ProposalListView(generic.ListView):
 
 class ProposalDetailView(generic.DetailView):
     model = Proposal
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        proposal = self.get_object()
+
+        if self.request.user.is_authenticated:
+            context["user_like"] = proposal.get_user_like(self.request.user)
+        else:
+            context["user_like"] = None
+
+        return context
 
 
 class ProposalCreateView(LoginRequiredMixin, generic.CreateView):
@@ -190,3 +202,45 @@ class ProjectCommentDeleteView(LoginRequiredMixin, generic.DeleteView):
 
     def get_success_url(self):
         return self.object.content_object.get_absolute_url()
+
+
+class ProposalLikeToggleView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        value = request.POST.get("value")  # "like" або "dislike"
+        content_type = ContentType.objects.get_for_model(Proposal)
+
+        like, created = Like.objects.get_or_create(
+            user=request.user,
+            content_type=content_type,
+            object_id=proposal.id,
+        )
+
+        if like.value == value:
+            like.delete()  # toggle off, тобто "нічого"
+        else:
+            like.value = value
+            like.save()
+
+        return redirect(proposal.get_absolute_url())
+
+
+class ProjectLikeToggleView(LoginRequiredMixin, View):
+    def post(self, request, pk, project_pk):
+        project = get_object_or_404(Project, pk=project_pk, proposal_id=pk)
+        value = request.POST.get("value")  # "like" або "dislike"
+        content_type = ContentType.objects.get_for_model(Project)
+
+        like, created = Like.objects.get_or_create(
+            user=request.user,
+            content_type=content_type,
+            object_id=project.id,
+        )
+
+        if like.value == value:
+            like.delete()  # toggle off
+        else:
+            like.value = value
+            like.save()
+
+        return redirect(project.get_absolute_url())

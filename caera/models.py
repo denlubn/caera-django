@@ -33,6 +33,29 @@ class Tag(models.Model):
         return self.name
 
 
+class Like(models.Model):
+    LIKE = "like"
+    DISLIKE = "dislike"
+
+    VALUE_CHOICES = [
+        (LIKE, "Like"),
+        (DISLIKE, "Dislike"),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    value = models.CharField(max_length=7, choices=VALUE_CHOICES)
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    class Meta:
+        unique_together = ("user", "content_type", "object_id")
+
+    def __str__(self):
+        return f"{self.user} - {self.value} - {self.content_object}"
+
+
 class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -65,6 +88,26 @@ class Proposal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # updated_at = models.DateTimeField(auto_now=True)
     comments = GenericRelation("Comment")
+    likes = GenericRelation("Like")
+
+    def like_count(self):
+        return self.likes.filter(value=Like.LIKE).count()
+
+    def dislike_count(self):
+        return self.likes.filter(value=Like.DISLIKE).count()
+
+    def get_user_like(self, user):
+        if not user.is_authenticated:
+            return None
+        return self.likes.filter(user=user).first()
+
+    def is_liked_by(self, user):
+        like = self.get_user_like(user)
+        return like and like.value == Like.LIKE
+
+    def is_disliked_by(self, user):
+        like = self.get_user_like(user)
+        return like and like.value == Like.DISLIKE
 
     def __str__(self):
         return self.title
@@ -91,6 +134,27 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # updated_at = models.DateTimeField(auto_now=True)
     comments = GenericRelation("Comment")
+    likes = GenericRelation("Like")
+
+    def like_count(self):
+        return self.likes.filter(value=Like.LIKE).count()
+
+    def dislike_count(self):
+        return self.likes.filter(value=Like.DISLIKE).count()
+
+    def get_user_like(self, user):
+        if not user.is_authenticated:
+            return None
+        return self.likes.filter(user=user).first()
+
+    def is_liked_by(self, user):
+        like = self.get_user_like(user)
+        return like and like.value == Like.LIKE
+
+    def is_disliked_by(self, user):
+        like = self.get_user_like(user)
+        return like and like.value == Like.DISLIKE
+
 
     def __str__(self):
         return self.title
