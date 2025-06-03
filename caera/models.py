@@ -151,6 +151,21 @@ class Project(models.Model):
     comments = GenericRelation("Comment")
     likes = GenericRelation("Like")
     paid_reactions = GenericRelation("PaidReaction")
+    fundraising_goal = models.DecimalField(
+        max_digits=10, decimal_places=2,
+        default=100000,
+        verbose_name="Ціль збору"
+    )
+
+    @property
+    def total_donated(self):
+        return self.donations.aggregate(total=models.Sum('amount'))['total'] or 0
+
+    @property
+    def fundraising_progress_percent(self):
+        if self.fundraising_goal > 0:
+            return min((self.total_donated / self.fundraising_goal) * 100, 100)
+        return 0
 
     def like_count(self):
         return self.likes.filter(value=Like.LIKE).count()
@@ -177,6 +192,22 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse("caera:project-detail", kwargs={'project_pk': self.pk, 'pk': self.proposal.pk})
+
+
+class Donation(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        related_name='donations'
+    )
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE,
+        related_name='donations'
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.project.title}: ${self.amount}"
 
 
 class User(AbstractUser):

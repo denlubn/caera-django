@@ -5,7 +5,7 @@ from caera.views import ProposalListView, ProposalDetailView, profile_view, Prof
     ProjectCreateView, ProjectListView, ProjectDetailView, ProjectUpdateView, ProjectDeleteView, \
     ProposalCommentCreateView, ProposalCommentUpdateView, ProposalCommentDeleteView, ProjectCommentCreateView, \
     ProjectCommentUpdateView, ProjectCommentDeleteView, ProposalLikeToggleView, ProjectLikeToggleView, \
-    ProposalPaidReactionToggleView, ProjectPaidReactionToggleView
+    ProposalPaidReactionToggleView, ProjectPaidReactionToggleView, ProjectDonateView
 
 urlpatterns = [
     path("tag/create/", TagCreateView.as_view(), name="tag-create"),
@@ -33,6 +33,8 @@ urlpatterns = [
 
     path("proposals/<int:pk>/projects/<int:project_pk>/like-toggle/", ProjectLikeToggleView.as_view(), name="project-like-toggle"),
     path("proposals/<int:pk>/projects/<int:project_pk>/paid-reaction/", ProjectPaidReactionToggleView.as_view(), name="project-paid-reaction-toggle"),
+
+    path("proposals/<int:pk>/projects/<int:project_pk>/donate/", ProjectDonateView.as_view(), name='project-donate'),
 
     path("accounts/profile/", profile_view, name="profile"),
     path("accounts/create/", ProfileCreateView.as_view(), name="profile-create"),

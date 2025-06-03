@@ -50,6 +50,43 @@
     {{ project.description }}
   </div>
 
+  <div class="card my-4">
+    <div class="card-body">
+      <h5 class="card-title">Збір коштів</h5>
+
+      <p class="card-text mb-2">
+        Мета: <strong>{{ project.fundraising_goal }} грн.</strong><br>
+        Зібрано: <strong>{{ project.total_donated }} грн.</strong>
+      </p>
+
+      <div class="progress" style="height: 25px;">
+        <div class="progress-bar
+                  {% if project.fundraising_progress_percent < 50 %}
+                    bg-warning
+                  {% elif project.fundraising_progress_percent < 100 %}
+                    bg-info
+                  {% else %}
+                    bg-success
+                  {% endif %}"
+             role="progressbar"
+             style="width: {{ project.fundraising_progress_percent }}%;"
+             aria-valuenow="{{ project.fundraising_progress_percent }}"
+             aria-valuemin="0"
+             aria-valuemax="100">
+          {{ project.fundraising_progress_percent|floatformat:0 }}%
+        </div>
+      </div>
+
+      <form method="post" action="{% url 'caera:project-donate' pk=proposal.pk project_pk=project.pk %}" class="mt-3">
+        {% csrf_token %}
+        <div class="input-group">
+          <input type="number" name="amount" min="1" step="0.01" class="form-control" placeholder="Сума донату">
+          <button type="submit" class="btn btn-outline-primary">Задонатити</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="reviews">
     <h2 class="review_h2">
       Комментарі

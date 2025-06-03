@@ -7,7 +7,7 @@ from django.views import generic, View
 from django.views.generic import UpdateView
 
 from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm, ProjectForm, CommentForm
-from caera.models import Proposal, User, Tag, Project, Comment, Like, PaidReaction
+from caera.models import Proposal, User, Tag, Project, Comment, Like, PaidReaction, Donation
 
 
 @login_required
@@ -287,5 +287,25 @@ class ProjectPaidReactionToggleView(LoginRequiredMixin, View):
 
         if not created:
             paid_reaction.delete()  # toggle off
+
+        return redirect(project.get_absolute_url())
+
+
+class ProjectDonateView(LoginRequiredMixin, View):
+    def post(self, request, pk, project_pk):
+        proposal = get_object_or_404(Proposal, pk=pk)
+        project = get_object_or_404(Project, pk=project_pk)
+        amount = request.POST.get("amount")
+
+        try:
+            amount = float(amount)
+            if amount > 0:
+                Donation.objects.create(
+                    user=request.user,
+                    project=project,
+                    amount=amount
+                )
+        except (ValueError, TypeError):
+            pass
 
         return redirect(project.get_absolute_url())
