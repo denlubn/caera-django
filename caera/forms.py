@@ -31,6 +31,7 @@ class ProposalForm(forms.ModelForm):
     class Meta:
         model = Proposal
         fields = "__all__"
+        exclude = ['author']
         labels = {
             "title": "Заголовок",
             "description": "Опис",
@@ -80,8 +81,10 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = "__all__"
+        exclude = ['author']
         labels = {
             "title": "Заголовок",
+            "proposal": "Пропозиція",
             "description": "Опис",
             "city": "Місто",
             "tags": "Теги",
@@ -116,3 +119,18 @@ class ProfileCreationForm(UserCreationForm):
             ),
             "password2": "Введіть той самий пароль ще раз для перевірки.",
         }
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']
+        labels = {
+            "username": "Ім’я користувача",
+            "first_name": "Ім’я",
+            "last_name": "Прізвище",
+            "email": "Електронна пошта",
+        }
+        help_texts = {
+            "username": "Обов’язково. Не більше 150 символів. Літери, цифри та символи @/./+/-/_",}
+

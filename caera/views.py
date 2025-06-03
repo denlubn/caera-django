@@ -6,7 +6,8 @@ from django.urls import reverse_lazy
 from django.views import generic, View
 from django.views.generic import UpdateView
 
-from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm, ProjectForm, CommentForm
+from caera.forms import ProposalForm, TagForm, ProfileCreationForm, ProposalSearchForm, ProjectForm, CommentForm, \
+    ProfileUpdateForm
 from caera.models import Proposal, User, Tag, Project, Comment, Like, PaidReaction, Donation
 
 
@@ -24,8 +25,10 @@ class ProfileCreateView(generic.CreateView):
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    fields = ['username', 'first_name', 'last_name', 'email']
+    form_class = ProfileUpdateForm
+    # fields = ['username', 'first_name', 'last_name', 'email']
     template_name = 'accounts/profile_update.html'
+    # template_name = "accounts/profile_form.html"
     success_url = reverse_lazy('caera:profile')
 
     def get_object(self, queryset=None):
@@ -88,6 +91,10 @@ class ProposalCreateView(LoginRequiredMixin, generic.CreateView):
     model = Proposal
     form_class = ProposalForm
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
 
 class ProposalUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Proposal
@@ -115,6 +122,11 @@ class ProjectListView(generic.ListView):
 class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
     model = Project
     form_class = ProjectForm
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+        return super().form_valid(form)
 
 
 class ProjectDetailView(generic.DetailView):

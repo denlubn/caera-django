@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>
-    {{ proposal.title }}
-    Проєкти
-          <a href="{% url 'caera:project-create' pk=proposal.id %}" class="btn btn-primary link-to-page">
-            Створити новий
-          </a>
-  </h1>
+  <h2>
+    Проєкти: <a href="{% url 'caera:proposal-detail' pk=proposal.id %}">{{ proposal.title }}</a>
 
-  <br>
+    <a href="{% url 'caera:project-create' pk=proposal.id %}" class="btn btn-primary link-to-page">
+      Створити новий
+    </a>
+  </h2>
+
+  <hr>
 
   {% if project_list %}
     {% for project in project_list %}
@@ -20,22 +20,25 @@
           </div>
         {% else %}
         {% endif %}
-        <div class="info">
-          <a href="{{ project.get_absolute_url }}">{{ project.title }}</a>
+        <div class="info-list">
+          від: {{ project.author }}
+
           <p>
-            Tags:
-            {% for tag in project.tags.all %}
-              {{ tag.name }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
+            <a href="{{ project.get_absolute_url }}">{{ project.title }}</a>
           </p>
+
           <p>
-            Author: {{ project.author }}
+            {% for tag in project.tags.all %}
+              <div class="tag">
+                {{ tag.name }}
+              </div>
+            {% endfor %}
           </p>
         </div>
       </div>
     {% endfor %}
   {% else %}
-    <p>Отакої ;( Не створено ні одного проєкту</p>
+    <p>Отакої ;( Немає ні одного проєкту</p>
   {% endif %}
 
 {% endblock %}

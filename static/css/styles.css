@@ -2,11 +2,6 @@ body {
     margin-top: 20px;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
 div {
     display: block;
     /*vertical-align: baseline;*/
@@ -18,19 +13,30 @@ div {
 }
 
 .partition {
-    border: 1px solid gray;
-    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    background-color: #f6f8f9;
+    border-radius: 8px;
     margin-bottom: 10px;
     position: relative;
     display: flex;
     flex-direction: row;
 }
 
+.tag {
+    display: inline-block;
+    background-color: #ccc;
+    border-radius: 20px;
+    padding: 4px 8px;
+    margin-right: 4px;
+}
+
 .reviews {
-    border: 1px solid gray;
-    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 8px;
     margin-bottom: 10px;
     position: relative;
+    padding: 8px;
+    margin-top: 10px;
 }
 
 .review_h2 {
@@ -63,7 +69,7 @@ div {
 
 .image_div {
     margin: 8px 8px;
-    border: 1px solid;
+    /*border: 1px solid;*/
     border-radius: 4px;
     height: 140px;
     width: 240px;
@@ -97,20 +103,47 @@ div {
 
 .info {
     margin: 8px 8px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.info-list {
+    margin: 8px 8px;
+    /*flex-grow: 1;*/
+    /*display: flex;*/
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.reaction-forms {
+  display: flex;
+  gap: 15px; /* або margin-right, якщо gap не підтримується */
+  align-items: center;
+}
+
+.comment-form {
+    margin: 8px
 }
 
 .proposal-description {
-    background-color: #f1f2f4; /* світло-сірий */
-    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, .125);
+    background-color: #f6f8f9;
+    border-radius: 8px;
     padding: 16px;
     margin-top: 10px;
     color: #111;
     font-size: 16px;
     line-height: 1.5;
+    margin-bottom: 10px;
 }
 
 .project-card {
     max-width: 312px;
 }
 
-
+.filters {
+    display: flex;
+    gap: 8px;
+}

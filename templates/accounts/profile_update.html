@@ -1,21 +1,22 @@
 {% extends "base.html" %}
+{% load crispy_forms_filters %}
 
 {% block content %}
-  <div class="container mt-5">
-    <h2 class="mb-4">Редагування профілю</h2>
+  <div class="list-group">
+    <div class="list-group-item bg-info text-white font-weight-bold">
+      Редагування профілю
+    </div>
 
-    <form method="post">
+    <form method="post" class="w-100">
       {% csrf_token %}
-      {% for field in form %}
-        <div class="form-group">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          {% if field.errors %}
-            <div class="text-danger">{{ field.errors }}</div>
-          {% endif %}
-        </div>
-      {% endfor %}
-      <button type="submit" class="btn btn-primary">Зберегти</button>
+
+      <div class="list-group-item">
+        {{ form|crispy }}
+      </div>
+
+      <div class="card-footer text-right">
+        <button type="submit" class="btn btn-primary">Зберегти</button>
+      </div>
     </form>
   </div>
 {% endblock %}

@@ -9,48 +9,67 @@
     {% else %}
     {% endif %}
     <div class="info">
-      <h1>
-        {{ project.title }}
-        <a href="{% url 'caera:project-delete' pk=proposal.id project_pk=project.id %}"
-           class="btn btn-danger link-to-page">
-          Видалити
-        </a>
+      <div>
+        <h2>
+          {{ project.title }}
+        </h2>
 
-        <a href="{% url 'caera:project-update' pk=proposal.id project_pk=project.id %}"
-           class="btn btn-secondary link-to-page">
-          Редагувати
-        </a>
-      </h1>
+        {% for tag in project.tags.all %}
+          <div class="tag">
+            {{ tag.name }}
+          </div>
+        {% endfor %}
 
-      <form method="post" action="{% url 'caera:project-like-toggle' pk=proposal.pk project_pk=project.pk %}">
-        {% csrf_token %}
-        <button type="submit" name="value" value="like"
-                class="btn {% if user_like and user_like.value == 'like' %}btn-success{% else %}btn-outline-success{% endif %}">
-          👍 ({{ project.like_count }})
-        </button>
+      </div>
 
-        <button type="submit" name="value" value="dislike"
-                class="btn {% if user_like and user_like.value == 'dislike' %}btn-danger{% else %}btn-outline-danger{% endif %}">
-          👎 ({{ project.dislike_count }})
-        </button>
-      </form>
+      <div class="d-flex justify-content-between">
+        <div class="d-flex align-items-center reaction-forms">
+          <form method="post" action="{% url 'caera:project-like-toggle' pk=proposal.pk project_pk=project.pk %}">
+            {% csrf_token %}
+            <button type="submit" name="value" value="like"
+                    class="btn {% if user_like and user_like.value == 'like' %}btn-success{% else %}btn-outline-success{% endif %}">
+              👍 ({{ project.like_count }})
+            </button>
 
-      <form method="post" action="{% url 'caera:project-paid-reaction-toggle' pk=proposal.pk project_pk=project.pk %}">
-        {% csrf_token %}
-        <button type="submit"
-                class="btn {% if user_paid_reaction %}btn-warning{% else %}btn-outline-warning{% endif %}">
-          ⭐ ({{ project.paid_reactions.count }})
-        </button>
-      </form>
+            <button type="submit" name="value" value="dislike"
+                    class="btn {% if user_like and user_like.value == 'dislike' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+              👎 ({{ project.dislike_count }})
+            </button>
+          </form>
 
+          <form method="post"
+                action="{% url 'caera:project-paid-reaction-toggle' pk=proposal.pk project_pk=project.pk %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="btn {% if user_paid_reaction %}btn-warning{% else %}btn-outline-warning{% endif %}">
+              ⭐ ({{ project.paid_reactions.count }})
+            </button>
+          </form>
+        </div>
+        <div>
+          <a href="{% url 'caera:project-delete' pk=proposal.id project_pk=project.id %}"
+             class="btn btn-danger link-to-page">
+            Видалити
+          </a>
+
+          <a href="{% url 'caera:project-update' pk=proposal.id project_pk=project.id %}"
+             class="btn btn-secondary link-to-page">
+            Редагувати
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="proposal-description">
+    <p>
+      від: {{ project.author.username }}
+    </p>
+
     {{ project.description }}
   </div>
 
-  <div class="card my-4">
+  <div class="card">
     <div class="card-body">
       <h5 class="card-title">Збір коштів</h5>
 
@@ -89,15 +108,20 @@
 
   <div class="reviews">
     <h2 class="review_h2">
-      Комментарі
-
-      <a href="{% url 'caera:project-comment-create' pk=proposal.id project_pk=project.id %}" class="btn link-to-page"
-         style="color: forestgreen">
-        Комментувати
-      </a>
+      Коментарі
     </h2>
 
     <hr>
+
+    <form method="post" action="{% url 'caera:project-comment-create' pk=proposal.id project_pk=project.id %}"
+          class="mt-3 comment-form">
+      {% csrf_token %}
+      <div class="input-group">
+        <input type="text" name="text" class="form-control" placeholder="Ваш коментар">
+        <button type="submit" class="btn btn-outline-primary">Коментувати</button>
+      </div>
+    </form>
+
     {% for comment in project.comments.all %}
       <div class="question">
         {{ comment.user.username }}

@@ -9,8 +9,9 @@
   {#      </a>#}
   {#  </h1>#}
 
-  <div class="d-flex gap-2 mb-3">
-    <form action="" method="get" class="form-inline d-flex gap-2 align-items-end">
+
+  <form action="" method="get" class="form-inline d-flex gap-2 align-items-end">
+    <div class="filters">
       <div>
         {{ search_form.title|as_crispy_field }}
       </div>
@@ -23,8 +24,9 @@
       <div>
         <input type="submit" value="Фільтрувати" class="btn btn-secondary">
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
+
   <br>
 
   {% if proposal_list %}
@@ -36,16 +38,20 @@
           </div>
         {% else %}
         {% endif %}
-        <div class="info">
-          <a href="{% url "caera:proposal-detail" pk=proposal.id %}">{{ proposal.title }}</a>
+        <div class="info-list">
+
+          від: {{ proposal.author }}
+
           <p>
-            Tags:
-            {% for tag in proposal.tags.all %}
-              {{ tag.name }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
+            <a href="{% url "caera:proposal-detail" pk=proposal.id %}">{{ proposal.title }}</a>
           </p>
+
           <p>
-            Author: {{ proposal.author }}
+            {% for tag in proposal.tags.all %}
+              <div class="tag">
+                {{ tag.name }}
+              </div>
+            {% endfor %}
           </p>
         </div>
       </div>

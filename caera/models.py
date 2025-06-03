@@ -18,6 +18,8 @@ class City(models.Model):
 
     class Meta:
         ordering = ["name"]
+        verbose_name = "City"
+        verbose_name_plural = "Cities"
 
     def __str__(self):
         return self.name
@@ -100,7 +102,6 @@ class Proposal(models.Model):
     tags = models.ManyToManyField(Tag, related_name="proposals")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    # updated_at = models.DateTimeField(auto_now=True)
     comments = GenericRelation("Comment")
     likes = GenericRelation("Like")
     paid_reactions = GenericRelation("PaidReaction")
@@ -164,7 +165,7 @@ class Project(models.Model):
     @property
     def fundraising_progress_percent(self):
         if self.fundraising_goal > 0:
-            return min((self.total_donated / self.fundraising_goal) * 100, 100)
+            return (self.total_donated / self.fundraising_goal) * 100
         return 0
 
     def like_count(self):

@@ -9,50 +9,67 @@
     {% else %}
     {% endif %}
     <div class="info">
-      <h1>
-        {{ proposal.title }}
-        <a href="{% url 'caera:proposal-delete' pk=proposal.id %}" class="btn btn-danger link-to-page">
-          Видалити
-        </a>
+      <div>
+        <h2>
+          {{ proposal.title }}
+        </h2>
+        {% for tag in proposal.tags.all %}
+          <div class="tag">
+            {{ tag.name }}
+          </div>
+        {% endfor %}
+      </div>
 
-        <a href="{% url 'caera:proposal-update' pk=proposal.id %}" class="btn btn-secondary link-to-page">
-          Редагувати
-        </a>
-      </h1>
+      <div class="d-flex justify-content-between">
+        {#        <div class="d-flex justify-content-between mt-3">#}
+        <div class="d-flex align-items-center reaction-forms">
+          <form method="post" action="{% url 'caera:proposal-like-toggle' pk=proposal.pk %}">
+            {% csrf_token %}
 
-      <form method="post" action="{% url 'caera:proposal-like-toggle' pk=proposal.pk %}">
-        {% csrf_token %}
+            <button type="submit" name="value" value="like"
+                    class="btn {% if user_like and user_like.value == 'like' %}btn-success{% else %}btn-outline-success{% endif %}">
+              👍 ({{ proposal.like_count }})
+            </button>
 
-        <button type="submit" name="value" value="like"
-                class="btn {% if user_like and user_like.value == 'like' %}btn-success{% else %}btn-outline-success{% endif %}">
-          👍 ({{ proposal.like_count }})
-        </button>
+            <button type="submit" name="value" value="dislike"
+                    class="btn {% if user_like and user_like.value == 'dislike' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+              👎 ({{ proposal.dislike_count }})
+            </button>
+          </form>
 
-        <button type="submit" name="value" value="dislike"
-                class="btn {% if user_like and user_like.value == 'dislike' %}btn-danger{% else %}btn-outline-danger{% endif %}">
-          👎 ({{ proposal.dislike_count }})
-        </button>
-      </form>
+          <form method="post" action="{% url 'caera:proposal-paid-reaction-toggle' pk=proposal.pk %}">
+            {% csrf_token %}
+            <button type="submit"
+                    class="btn {% if user_paid_reaction %}btn-warning{% else %}btn-outline-warning{% endif %}">
+              ⭐ ({{ proposal.paid_reactions.count }})
+            </button>
+          </form>
+        </div>
+        <div>
+          <a href="{% url 'caera:proposal-delete' pk=proposal.id %}" class="btn btn-danger link-to-page">
+            Видалити
+          </a>
 
-      <form method="post" action="{% url 'caera:proposal-paid-reaction-toggle' pk=proposal.pk %}">
-        {% csrf_token %}
-        <button type="submit"
-                class="btn {% if user_paid_reaction %}btn-warning{% else %}btn-outline-warning{% endif %}">
-          ⭐ ({{ proposal.paid_reactions.count }})
-        </button>
-      </form>
-
+          <a href="{% url 'caera:proposal-update' pk=proposal.id %}" class="btn btn-secondary link-to-page">
+            Редагувати
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="proposal-description">
+    <p>
+      від: {{ proposal.author.username }}
+    </p>
+
     {{ proposal.description }}
   </div>
 
   <div class="proposal-description">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h5 class="mb-0">Проєкти:</h5>
-      <a href="{% url 'caera:project-list' pk=proposal.id %}" class="btn btn-outline-primary btn-sm">Подивитися всі</a>
+      <a href="{% url 'caera:project-list' pk=proposal.id %}" class="btn btn-primary btn-sm">Подивитися всі</a>
     </div>
 
     <div class="d-flex flex-wrap gap-3">
@@ -65,7 +82,7 @@
           </a>
           <div class="text-muted mt-1 small">від: {{ project.author }}</div>
         </div>
-        {% empty %}
+      {% empty %}
         <p>Немає доступних проєктів.</p>
       {% endfor %}
     </div>
@@ -73,15 +90,23 @@
 
   <div class="reviews">
     <h2 class="review_h2">
-      Комментарі
+      Коментарі
 
-      <a href="{% url 'caera:proposal-comment-create' pk=proposal.id %}" class="btn link-to-page"
-         style="color: forestgreen">
-        Комментувати
-      </a>
+      {#      <a href="{% url 'caera:proposal-comment-create' pk=proposal.id %}" class="btn link-to-page"#}
+      {#         style="color: forestgreen">#}
+      {#        Комментувати#}
+      {#      </a>#}
     </h2>
 
     <hr>
+
+    <form method="post" action="{% url 'caera:proposal-comment-create' pk=proposal.pk %}" class="mt-3 comment-form">
+      {% csrf_token %}
+      <div class="input-group">
+        <input type="text" name="text" class="form-control" placeholder="Ваш коментар">
+        <button type="submit" class="btn btn-outline-primary">Коментувати</button>
+      </div>
+    </form>
 
     {% for comment in proposal.comments.all %}
       <div class="question">
