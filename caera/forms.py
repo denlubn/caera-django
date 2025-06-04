@@ -100,7 +100,7 @@ class ProfileCreationForm(UserCreationForm):
             "first_name", "last_name", "email",
         )
         labels = {
-            "username": "Ім’я користувача",
+            "username": "Псевдонім",
             "first_name": "Ім’я",
             "last_name": "Прізвище",
             "email": "Електронна пошта",
@@ -126,7 +126,7 @@ class ProfileUpdateForm(forms.ModelForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
         labels = {
-            "username": "Ім’я користувача",
+            "username": "Псевдонім",
             "first_name": "Ім’я",
             "last_name": "Прізвище",
             "email": "Електронна пошта",
