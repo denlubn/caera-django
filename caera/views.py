@@ -21,6 +21,7 @@ class ProfileCreateView(generic.CreateView):
     # fields = "__all__"
     form_class = ProfileCreationForm
     template_name = "accounts/profile_form.html"
+    success_url = reverse_lazy('caera:profile')
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -132,6 +133,9 @@ class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
 class ProjectDetailView(generic.DetailView):
     model = Project
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Project, pk=self.kwargs['project_pk'])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         project = self.get_object()
@@ -230,7 +234,7 @@ class ProjectCommentDeleteView(LoginRequiredMixin, generic.DeleteView):
 class ProposalLikeToggleView(LoginRequiredMixin, View):
     def post(self, request, pk):
         proposal = get_object_or_404(Proposal, pk=pk)
-        value = request.POST.get("value")  # "like" або "dislike"
+        value = request.POST.get("value")
         content_type = ContentType.objects.get_for_model(Proposal)
 
         like, created = Like.objects.get_or_create(
@@ -240,7 +244,7 @@ class ProposalLikeToggleView(LoginRequiredMixin, View):
         )
 
         if like.value == value:
-            like.delete()  # toggle off, тобто "нічого"
+            like.delete()
         else:
             like.value = value
             like.save()
