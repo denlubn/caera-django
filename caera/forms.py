@@ -81,7 +81,7 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = "__all__"
-        exclude = ['author']
+        exclude = ['author', 'proposal']
         labels = {
             "title": "Заголовок",
             "proposal": "Пропозиція",

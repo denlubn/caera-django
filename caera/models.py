@@ -1,5 +1,6 @@
 import os
 import uuid
+from decimal import Decimal, ROUND_DOWN
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -160,7 +161,8 @@ class Project(models.Model):
 
     @property
     def total_donated(self):
-        return self.donations.aggregate(total=models.Sum('amount'))['total'] or 0
+        total = self.donations.aggregate(total=models.Sum('amount'))['total'] or 0
+        return total.quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     @property
     def fundraising_progress_percent(self):

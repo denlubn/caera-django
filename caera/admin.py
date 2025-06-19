@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from caera.models import User, Tag, Proposal, Comment, Project, Donation, City
+from caera.models import User, Tag, Proposal, Comment, Project, Donation, City, PaidReaction, Like
 
 
 @admin.register(Proposal)
@@ -43,6 +43,19 @@ class DonationAdmin(admin.ModelAdmin):
     list_filter = ("user", "project", "created_at")
     search_fields = ("user__username", "project__title")
     ordering = ("-created_at",)
+
+
+@admin.register(Like)
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ("user", "value", "content_type", "content_object")
+    list_filter = ["value"]
+    search_fields = ("user__username",)
+
+
+@admin.register(PaidReaction)
+class PaidReactionAdmin(admin.ModelAdmin):
+    list_display = ("user", "content_type", "content_object")
+    search_fields = ("user__username",)
 
 
 admin.site.register(City)

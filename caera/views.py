@@ -44,10 +44,12 @@ class ProposalListView(generic.ListView):
 
         title = self.request.GET.get("title", "")
         tag = self.request.GET.get("tags")
+        city = self.request.GET.get("city")
 
         context["search_form"] = ProposalSearchForm(initial={
             "title": title,
             "tags": tag,
+            "city": city,
         })
 
         return context
@@ -129,6 +131,11 @@ class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.proposal = get_object_or_404(Proposal, pk=self.kwargs['pk'])
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['proposal'] = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+        return context
+
 
 class ProjectDetailView(generic.DetailView):
     model = Project
@@ -154,6 +161,11 @@ class ProjectDetailView(generic.DetailView):
 class ProjectUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Project
     form_class = ProjectForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['proposal'] = get_object_or_404(Proposal, pk=self.kwargs['pk'])
+        return context
 
 
 class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
