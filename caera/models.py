@@ -162,7 +162,7 @@ class Project(models.Model):
     @property
     def total_donated(self):
         total = self.donations.aggregate(total=models.Sum('amount'))['total'] or 0
-        return total.quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+        return Decimal(total).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
 
     @property
     def fundraising_progress_percent(self):

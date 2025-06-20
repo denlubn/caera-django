@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Count, Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic, View
@@ -55,7 +56,9 @@ class ProposalListView(generic.ListView):
         return context
 
     def get_queryset(self):
-        queryset = Proposal.objects.select_related('author', 'city').prefetch_related('tags')
+        queryset = Proposal.objects.select_related('author', 'city').prefetch_related('tags').annotate(
+            like_count=Count('likes', filter=Q(likes__value='like'))
+        ).order_by('-like_count')
         form = ProposalSearchForm(self.request.GET)
 
         if form.is_valid():
@@ -72,6 +75,7 @@ class ProposalListView(generic.ListView):
 
             return queryset
         return queryset
+
 
 class ProposalDetailView(generic.DetailView):
     model = Proposal
@@ -114,7 +118,9 @@ class ProjectListView(generic.ListView):
 
     def get_queryset(self):
         proposal_id = self.kwargs['pk']
-        return Project.objects.filter(proposal__id=proposal_id)
+        return Project.objects.filter(proposal__id=proposal_id).annotate(
+            like_count=Count('likes', filter=Q(likes__value='like'))
+        ).order_by('-like_count')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
